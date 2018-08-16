@@ -54,6 +54,11 @@ self.addEventListener('fetch', (event) => {
       event.respondWith(caches.match('js/restaurant_info.js'));
       return;
     }
+
+    if (requestUrl.pathname === '/js/dbhelper.js') {
+      event.respondWith(caches.match('js/dbhelper.js'));
+      return;
+    }
   }
 
   // if (requestUrl.origin === "https://unpkg.com") {

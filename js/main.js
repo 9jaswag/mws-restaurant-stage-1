@@ -9,7 +9,7 @@ var markers = []
  */
 document.addEventListener('DOMContentLoaded', (event) => {
   registerServiceWorker();
-  initMap(); // added 
+  initMap(); // added
   fetchNeighborhoods();
   fetchCuisines();
   DBHelper.offlineAlert();
@@ -144,6 +144,10 @@ updateRestaurants = () => {
  * Clear current restaurants, their HTML and remove their map markers.
  */
 resetRestaurants = (restaurants) => {
+  // Hide no restaurant text
+  const paragraph = document.querySelector('.no-restaurant');
+  paragraph.style.display = 'none';
+
   // Remove all restaurants
   self.restaurants = [];
   const ul = document.getElementById('restaurants-list');
@@ -162,6 +166,11 @@ resetRestaurants = (restaurants) => {
  */
 fillRestaurantsHTML = (restaurants = self.restaurants) => {
   const ul = document.getElementById('restaurants-list');
+  if (restaurants.length < 1) {
+    const paragraph = document.querySelector('.no-restaurant');
+    paragraph.style.display = 'block';
+    return;
+  }
   restaurants.forEach(restaurant => {
     ul.append(createRestaurantHTML(restaurant));
   });
@@ -177,6 +186,7 @@ createRestaurantHTML = (restaurant) => {
   const image = document.createElement('img');
   image.className = 'restaurant-img';
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  image.alt = `image for ${restaurant.name}`;
   li.append(image);
 
   const name = document.createElement('h1');

@@ -59,11 +59,9 @@ const serveCachedData = (event) => {
   } else {
     storageUrl = pathname.slice(1, pathname.length);
   }
-  console.log(storageUrl);
 
   return caches.open(cacheName).then(cache => {
     return cache.match(storageUrl).then(response => {
-      console.log(cache, storageUrl, response)
       return response || fetch(event.request).then(networkResponse => {
         return caches.open(cacheName).then(cache => {
           cache.put(storageUrl, networkResponse.clone());

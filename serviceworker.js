@@ -1,5 +1,5 @@
-const cacheName = 'mws-restaurant';
-const imageCacheName = 'mws-restaurant-image';
+const cacheName = 'mws-restaurant-v1';
+const imageCacheName = 'mws-restaurant-image-v1';
 const urlsToCache = [
   "./",
   "./css/styles.css",
@@ -35,6 +35,19 @@ self.addEventListener('fetch', (event) => {
   } else {
     event.respondWith(serveCachedData(event));
   }
+});
+
+self.addEventListener('activate', (event) => {
+  const currentCaches = [cacheName, imageCacheName];
+  event.waitUntil(
+    caches.keys().then(cacheList => {
+      cacheList.filter(cache => {
+        return cache.startsWith('mws-restaurant') && !currentCaches.includes(cache);
+      }).map(staleCache => {
+        return caches.delete(staleCache);
+      });
+    })
+  )
 });
 
 const serveCachedData = (event) => {

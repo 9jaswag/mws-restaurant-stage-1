@@ -1,4 +1,5 @@
 const cacheName = 'mws-restaurant';
+const imageCacheName = 'mws-restaurant-image';
 const urlsToCache = [
   "./",
   "./css/styles.css",
@@ -8,19 +9,14 @@ const urlsToCache = [
   "./data/restaurants.json",
   "./restaurant.html",
   "./404.html",
-  "./img/1.jpg",
-  "./img/10.jpg",
-  "./img/2.jpg",
-  "./img/3.jpg",
-  "./img/4.jpg",
-  "./img/5.jpg",
-  "./img/6.jpg",
-  "./img/7.jpg",
-  "./img/8.jpg",
-  "./img/9.jpg",
-  "http://localhost:8000/data/restaurants.json",
-  "https://unpkg.com/leaflet@1.3.1/dist/leaflet.css",
-  "https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
+  "https://fonts.googleapis.com/css?family=Lato|Open+Sans",
+  "https://fonts.gstatic.com/s/lato/v14/S6uyw4BMUTPHjx4wXiWtFCc.woff2",
+  "https://fonts.gstatic.com/s/opensans/v15/mem8YaGs126MiZpBA-UFVZ0bf8pkAg.woff2",
+  'https://unpkg.com/leaflet@1.3.1/dist/leaflet.css',
+  'https://unpkg.com/leaflet@1.3.1/dist/leaflet.js',
+  'https://unpkg.com/leaflet@1.3.1/dist/images/marker-icon.png',
+  'https://unpkg.com/leaflet@1.3.1/dist/images/marker-icon-2x.png',
+  'https://unpkg.com/leaflet@1.3.1/dist/images/marker-shadow.png'
 ];
 
 // install service worker
@@ -34,78 +30,56 @@ self.addEventListener('install', (event) => {
 
 // listen for fetch event
 self.addEventListener('fetch', (event) => {
-  const requestUrl = new URL(event.request.url);
-
-  if (requestUrl.origin === location.origin) {
-
-    if (requestUrl.pathname === '/') {
-      event.respondWith(serveCachedData(event.request, '/'));
-    }
-
-    if (requestUrl.href.includes('restaurant.html')) {
-      event.respondWith(serveCachedData(event.request, 'restaurant.html'));
-    }
-
-    if (requestUrl.pathname === '/data/restaurants.json') {
-      event.respondWith(serveCachedData(event.request, 'data/restaurants.json'));
-    }
-
-    if (requestUrl.pathname === '/js/main.js') {
-      event.respondWith(serveCachedData(event.request, 'js/main.js'));
-    }
-
-    if (requestUrl.pathname === '/css/styles.css') {
-      event.respondWith(serveCachedData(event.request, 'css/styles.css'));
-    }
-
-    if (requestUrl.pathname === '/js/restaurant_info.js') {
-      event.respondWith(serveCachedData(event.request, 'js/restaurant_info.js'));
-    }
-
-    if (requestUrl.pathname === '/js/dbhelper.js') {
-      event.respondWith(serveCachedData(event.request, 'js/dbhelper.js'));
-    }
-
-    if (requestUrl.pathname.includes('/img/')) {
-      const storageUrl = requestUrl.pathname.slice(1, requestUrl.pathname.length)
-      event.respondWith(serveCachedData(event.request, storageUrl));
-    }
+  if (event.request.destination === 'image') {
+    event.respondWith(serveCachedImage(event));
+  } else {
+    event.respondWith(serveCachedData(event));
   }
 });
 
-// const serveRestaurantData = (request) => {
-//   const storageUrl = 'data/restaurants.json';
-//   return caches.open(cacheName).then(cache => {
-//     return cache.match(storageUrl).then(response => {
-//       let networkFetch = fetch(request).then(networkResponse => {
-//         cache.put(storageUrl, networkResponse.clone());
-//         return networkResponse;
-//       });
+const serveCachedData = (event) => {
+  const requestUrl = new URL(event.request.url);
+  const { pathname } = requestUrl;
+  let storageUrl;
+  if (pathname === "/") {
+    storageUrl = "/";
+  } else {
+    storageUrl = pathname.slice(1, pathname.length);
+  }
+  console.log(storageUrl);
 
-//       return response || networkFetch
-//     });
-//   });
-// };
-
-const serveCachedData = (request, storageUrl) => {
-  return caches.match(storageUrl).then(response => {
-    if (response) {
-      return response;
-    }
-    return fetch(request).then(response => {
-      if (response.status === 404) {
-        return caches.match('404.html');
-      }
-      return caches.open(cacheName).then(cache => {
-        cache.put(storageUrl, response.clone())
-        return response;
+  return caches.open(cacheName).then(cache => {
+    return cache.match(storageUrl).then(response => {
+      console.log(cache, storageUrl, response)
+      return response || fetch(event.request).then(networkResponse => {
+        return caches.open(cacheName).then(cache => {
+          cache.put(storageUrl, networkResponse.clone());
+          return networkResponse;
+        });
+        // .catch
       });
-    })
-      .catch(error => {
-        return caches.match('404.html');
-      });
-  })
-    .catch(error => {
-      return caches.match('404.html');
+      // .catch
     });
-}
+    // possible .catch
+  });
+};
+
+serveCachedImage = (event) => {
+  const requestUrl = new URL(event.request.url);
+  const { pathname } = requestUrl;
+
+  return caches.open(imageCacheName).then(cache => {
+    return cache.match(pathname).then(response => {
+      return response || fetch(event.request).then(networkResponse => {
+        return caches.open(imageCacheName).then(cache => {
+          cache.put(pathname, networkResponse.clone());
+          return networkResponse;
+        });
+      });
+      // possible catch for network failure
+    });
+    // possible .catch for network and cache failure
+  }).catch(error => {
+    // serve offline image
+  })
+};

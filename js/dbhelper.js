@@ -13,7 +13,8 @@ class DBHelper {
     // const protocol = window.location.href.split('//')[0];
     // const host = window.location.host;
     // return `${protocol}//${host}/mws-restaurant-stage-1/data/restaurants.json`
-    return "../data/restaurants.json";
+    // return "../data/restaurants.json";
+    return './data/restaurants.json';
   }
 
   /**

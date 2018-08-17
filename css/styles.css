@@ -398,6 +398,14 @@ nav h1 a {
   display: none;
 }
 
+.not-found {
+  height: 80vh;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* ====================== Mobile Styles ====================== */
 @media screen and (max-width: 600px) {
 

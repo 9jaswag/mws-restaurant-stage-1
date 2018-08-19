@@ -3,8 +3,6 @@ Restaurant Reviews
 
 A simple restaurant review app that implements Service Workers and the Cache API. An Udacity's "Mobile Web Specialist" Nanodegree Project.
 
-[View live app](https://9jaswag.github.io/mws-restaurant-stage-1/)
-
 
 Getting Started
 ------

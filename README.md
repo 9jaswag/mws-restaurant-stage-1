@@ -1,7 +1,7 @@
 Restaurant Reviews
 ------
 
-A simple restaurant review app that implements Service Workers and the Cache API. An Udacity's "Mobile Web Specialist" Nanodegree Project.
+A simple restaurant review app that implements Service Workers and the Cache API. An Udacity "Mobile Web Specialist" Nanodegree Project.
 
 
 Getting Started

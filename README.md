@@ -7,12 +7,16 @@ A simple restaurant review app that implements Service Workers and the Cache API
 Getting Started
 ------
 
-#### Clone The Repository
-`$ git clone https://github.com/9jaswag/mws-restaurant-stage-1.git`
+#### Clone the repository
+```sh
+$ git clone https://github.com/9jaswag/restaurant-reviews.git
+```
 
 
 #### Change directory
-`$ cd mws-restaurant-stage-1`
+```sh
+$ cd restaurant-reviews
+```
 
 #### Run app
 Start up a simple HTTP server to serve up the site files on your local computer. Python has a simple tool to do this. Check the version of Python you have: 
@@ -31,6 +35,7 @@ If you can't be bothered about Python, you can also use [Lite Server](https://gi
 
 Built With
 ------
-## Leaflet.js and Mapbox:
+- Leaflet.js
+- Mapbox:
 
 This repository uses [leafletjs](https://leafletjs.com/) with [Mapbox](https://www.mapbox.com/). You need to replace `<your MAPBOX API KEY HERE>` with a token from [Mapbox](https://www.mapbox.com/). Mapbox is free to use, and does not require any payment information.

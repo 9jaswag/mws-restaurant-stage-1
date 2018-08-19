@@ -7,15 +7,15 @@ A simple restaurant review app that implements Service Workers and the Cache API
 Getting Started
 ------
 
-#### Clone The Repository
+#### Clone the repository
 ```sh
-$ git clone https://github.com/9jaswag/mws-restaurant-stage-1.git
+$ git clone https://github.com/9jaswag/restaurant-reviews.git
 ```
 
 
 #### Change directory
 ```sh
-$ cd mws-restaurant-stage-1
+$ cd restaurant-reviews
 ```
 
 #### Run app

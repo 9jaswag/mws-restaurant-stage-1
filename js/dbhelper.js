@@ -13,7 +13,8 @@ class DBHelper {
     // const protocol = window.location.href.split('//')[0];
     // const host = window.location.host;
     // return `${protocol}//${host}/mws-restaurant-stage-1/data/restaurants.json`
-    return "../data/restaurants.json";
+    // return "../data/restaurants.json";
+    return './data/restaurants.json';
   }
 
   /**
@@ -154,7 +155,7 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`/img/${restaurant.photograph}`);
+    return (`./img/${restaurant.photograph}`);
   }
 
   /**

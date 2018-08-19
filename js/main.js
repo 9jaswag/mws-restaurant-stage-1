@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
  */
 registerServiceWorker = () => {
   if (!navigator.serviceWorker) return;
-  navigator.serviceWorker.register('/serviceworker.js').then(reg => {
+  navigator.serviceWorker.register('./serviceworker.js').then(reg => {
     console.log('%c ServiceWorker %cRegistered!',
       'font-weight: 200; font-size: 20px; font-family: fantasy; color: red;',
       'font-weight: 200; font-size: 20px; font-family: fantasy; color: green;');

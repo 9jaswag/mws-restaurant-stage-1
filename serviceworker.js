@@ -70,8 +70,12 @@ const serveCachedData = (event) => {
         // .catch
       });
       // .catch
-    });
-    // possible .catch
+    })
+      .catch(() => {
+        if (storageUrl.includes('restaurant.html')) {
+          caches.match('./404.html')
+        }
+      });
   });
 };
 

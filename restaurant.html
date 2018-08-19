@@ -17,18 +17,20 @@
   <!-- Beginning header -->
   <header>
     <!-- Beginning nav -->
-    <nav>
+    <nav class="header-nav">
       <h1>
         <a href="/">Restaurant Reviews</a>
       </h1>
     </nav>
     <p class="offline-alert" aria-live="assertive">You're offline</p>
     <!-- Beginning breadcrumb -->
-    <ul id="breadcrumb">
-      <li>
-        <a href="./">Home</a>
-      </li>
-    </ul>
+    <nav aria-label="Breadcrumb" class="breadcrumb">
+      <ul id="breadcrumb">
+        <li>
+          <a href="./">Home</a>
+        </li>
+      </ul>
+    </nav>
     <!-- End breadcrumb -->
     <!-- End nav -->
   </header>
@@ -38,12 +40,12 @@
   <main id="maincontent">
     <!-- Beginning map -->
     <section id="map-container">
-      <div id="map"></div>
+      <div id="map" role="application" aria-label="map showing current restaurant's location"></div>
     </section>
     <!-- End map -->
     <!-- Beginning restaurant -->
     <section id="restaurant-container">
-      <h1 id="restaurant-name"></h1>
+      <h2 id="restaurant-name"></h2>
       <img id="restaurant-img">
       <p id="restaurant-cuisine"></p>
       <p id="restaurant-address"></p>
@@ -74,8 +76,6 @@
   <!-- Main javascript file -->
   <script type="text/javascript" src="js/restaurant_info.js"></script>
   <script type="application/javascript" rel="serviceWorker" charset="utf-8" src="./serviceworker.js"></script>
-  <!-- Google Maps -->
-  <!--  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA_tKbW6A5pQ-eupxI56myUnHLqYCzOjKo&libraries=places&callback=initMap"></script> -->
   <!-- End scripts -->
 
 </body>

@@ -1,12 +1,12 @@
-const cacheName = 'mws-restaurant-v1';
-const imageCacheName = 'mws-restaurant-image-v1';
+const cacheName = 'mws-restaurant-v2';
+const imageCacheName = 'mws-restaurant-image-v2';
 const urlsToCache = [
   "./",
   "./css/styles.css",
   "./js/main.js",
   "./js/restaurant_info.js",
   "./js/dbhelper.js",
-  "./data/restaurants.json",
+  "http://localhost:1337/restaurants",
   "./restaurant.html",
   "./404.html",
   "https://fonts.googleapis.com/css?family=Lato|Open+Sans",

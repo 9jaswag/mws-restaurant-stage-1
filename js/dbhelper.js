@@ -14,14 +14,32 @@ class DBHelper {
   /**
    * Fetch all restaurants.
    */
-  static fetchRestaurants(callback) {
-    const apiResponse = fetch(DBHelper.DATABASE_URL)
-      .then(response => response.json())
+  static async fetchRestaurants(callback) {
+    const networkFetch = fetch(DBHelper.DATABASE_URL)
+      .then(response => {
+        if (response.status != 200) {
+          return false;
+        }
+        return response.json();
+      })
       .catch(error => {
+        console.log('offline')
         callback(error, null);
       });
-    apiResponse.then(restaurants => {
-      callback(null, restaurants);
+
+    const networkResponse = await networkFetch;
+
+    getDbValue('restaurants').then(response => {
+      if (!response && !networkResponse) {
+        // show offline message or so
+      }
+
+      if (networkResponse && networkResponse.length > 0) {
+        deleteDbValue('restaurants');
+        setDbValue(networkResponse, 'restaurants');
+      }
+
+      callback(null, response || networkResponse);
     });
   }
 

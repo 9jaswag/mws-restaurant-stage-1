@@ -6,7 +6,7 @@ const urlsToCache = [
   "./js/main.js",
   "./js/restaurant_info.js",
   "./js/dbhelper.js",
-  "./data/restaurants.json",
+  "./js/idb.js",
   "./restaurant.html",
   "./404.html",
   "https://fonts.googleapis.com/css?family=Lato|Open+Sans",
@@ -51,8 +51,7 @@ self.addEventListener('activate', (event) => {
 });
 
 const serveCachedData = (event) => {
-  const requestUrl = new URL(event.request.url);
-  const { pathname } = requestUrl;
+  const { pathname } = getRequestPath(event);
   let storageUrl;
   if (pathname === "/") {
     storageUrl = "/";
@@ -63,6 +62,7 @@ const serveCachedData = (event) => {
   return caches.open(cacheName).then(cache => {
     return cache.match(storageUrl, { ignoreSearch: true }).then(response => {
       return response || fetch(event.request).then(networkResponse => {
+        if (storageUrl === 'restaurants') return networkResponse;
         return caches.open(cacheName).then(cache => {
           cache.put(storageUrl, networkResponse.clone());
           return networkResponse;
@@ -80,8 +80,7 @@ const serveCachedData = (event) => {
 };
 
 serveCachedImage = (event) => {
-  const requestUrl = new URL(event.request.url);
-  const { pathname } = requestUrl;
+  const { pathname } = getRequestPath(event);
 
   return caches.open(imageCacheName).then(cache => {
     return cache.match(pathname).then(response => {
@@ -98,3 +97,5 @@ serveCachedImage = (event) => {
     // serve offline image
   })
 };
+
+const getRequestPath = (event) => new URL(event.request.url);

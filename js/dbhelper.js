@@ -8,32 +8,39 @@ class DBHelper {
    * Change this to restaurants.json file location on your server.
    */
   static get DATABASE_URL() {
-    const port = 8000 // Change this to your server port
-    // return `http://localhost:${port}/data/restaurants.json`;
-    // const protocol = window.location.href.split('//')[0];
-    // const host = window.location.host;
-    // return `${protocol}//${host}/mws-restaurant-stage-1/data/restaurants.json`
-    // return "../data/restaurants.json";
-    return './data/restaurants.json';
+    return 'http://localhost:1337/restaurants';
   }
 
   /**
    * Fetch all restaurants.
    */
-  static fetchRestaurants(callback) {
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', DBHelper.DATABASE_URL);
-    xhr.onload = () => {
-      if (xhr.status === 200) { // Got a success response from server!
-        const json = JSON.parse(xhr.responseText);
-        const restaurants = json.restaurants;
-        callback(null, restaurants);
-      } else { // Oops!. Got an error from server.
-        const error = (`Request failed. Returned status of ${xhr.status}`);
+  static async fetchRestaurants(callback) {
+    const networkFetch = fetch(DBHelper.DATABASE_URL)
+      .then(response => {
+        if (response.status != 200) {
+          return false;
+        }
+        return response.json();
+      })
+      .catch(error => {
+        console.log('offline')
         callback(error, null);
+      });
+
+    const networkResponse = await networkFetch;
+
+    getDbValue('restaurants').then(response => {
+      if (!response && !networkResponse) {
+        // show offline message or so
       }
-    };
-    xhr.send();
+
+      if (networkResponse && networkResponse.length > 0) {
+        deleteDbValue('restaurants');
+        setDbValue(networkResponse, 'restaurants');
+      }
+
+      callback(null, response || networkResponse);
+    });
   }
 
   /**
@@ -155,7 +162,7 @@ class DBHelper {
    * Restaurant image URL.
    */
   static imageUrlForRestaurant(restaurant) {
-    return (`./img/${restaurant.photograph}`);
+    return (`./img/${restaurant.photograph}.jpg`);
   }
 
   /**

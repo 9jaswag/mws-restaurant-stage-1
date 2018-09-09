@@ -133,7 +133,8 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h3');
   title.innerHTML = 'Reviews';
-  container.appendChild(title);
+  title.tabIndex = 0;
+  container.prepend(title);
 
   if (!reviews) {
     const noReviews = document.createElement('p');
@@ -198,4 +199,25 @@ getParameterByName = (name, url) => {
   if (!results[2])
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+/**
+ * Submit a review
+ */
+submitReview = (event) => {
+  event.preventDefault();
+  const payload = {
+    restaurant_id: Number(event.currentTarget.baseURI.split('=')[1]),
+    name: event.srcElement[0].value,
+    rating: event.srcElement[1].value,
+    comments: event.srcElement[2].value
+  };
+
+  console.log(payload)
+  fetch('http://localhost:1337/reviews/', {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  }).then(response => response.json())
+    .then(response => console.log(response))
+    .catch(error => console.log(error));
 }

@@ -413,6 +413,10 @@ img {
   top: auto;
 }
 
+.review-form-container {
+  margin-bottom: 1rem;
+}
+
 #review-form label {
   display: block;
 }

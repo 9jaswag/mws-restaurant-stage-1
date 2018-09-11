@@ -80,7 +80,7 @@ fetchRestaurantFromURL = (callback) => {
 /**
  * Create restaurant HTML and add it to the webpage
  */
-fillRestaurantHTML = (restaurant = self.restaurant) => {
+fillRestaurantHTML = async (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
   name.tabIndex = 0;
@@ -101,8 +101,10 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
+  // fetch reviews
+  const reviews = await fetchReviews(restaurant.id)
   // fill reviews
-  fillReviewsHTML();
+  fillReviewsHTML(reviews);
 }
 
 /**
@@ -160,7 +162,7 @@ createReviewHTML = (review) => {
   li.tabIndex = 0;
 
   const date = document.createElement('p');
-  date.innerHTML = review.date;
+  date.innerHTML = formatDate(review.createdAt);
   li.appendChild(date);
 
   const rating = document.createElement('p');
@@ -205,6 +207,7 @@ getParameterByName = (name, url) => {
  * Submit a review
  */
 submitReview = (event) => {
+  const form = document.querySelector('#review-form');
   event.preventDefault();
   const payload = {
     restaurant_id: Number(event.currentTarget.baseURI.split('=')[1]),
@@ -213,11 +216,25 @@ submitReview = (event) => {
     comments: event.srcElement[2].value
   };
 
-  console.log(payload)
   fetch('http://localhost:1337/reviews/', {
     method: 'POST',
     body: JSON.stringify(payload)
   }).then(response => response.json())
-    .then(response => console.log(response))
+    .then(review => {
+      const reviewList = document.getElementById('reviews-list');
+      reviewList.appendChild(createReviewHTML(review));
+      form.reset();
+    })
     .catch(error => console.log(error));
+}
+
+fetchReviews = (restaurant_id) => {
+  const url = `http://localhost:1337/reviews/?restaurant_id=${restaurant_id}`;
+  return fetch(url).then(response => response.json()).then(response => response);
+}
+
+formatDate = (timestamp) => {
+  const date = new Date(timestamp);
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return date.toLocaleDateString('en-us', options)
 }

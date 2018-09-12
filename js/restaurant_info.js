@@ -102,7 +102,7 @@ fillRestaurantHTML = async (restaurant = self.restaurant) => {
     fillRestaurantHoursHTML();
   }
   // fetch reviews
-  const reviews = await DBHelper.fetchReviews(restaurant.id)
+  const reviews = await DBHelper.fetchReviews(restaurant.id);
   // fill reviews
   fillReviewsHTML(sortReviews(reviews));
 }

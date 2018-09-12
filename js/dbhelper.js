@@ -12,6 +12,13 @@ class DBHelper {
   }
 
   /**
+   * URL for fetching reviews
+   */
+  static FETCH_REVIEWS_URL(id) {
+    return `http://localhost:1337/reviews/?restaurant_id=${id}`
+  }
+
+  /**
    * Fetch all restaurants.
    */
   static async fetchRestaurants(callback) {
@@ -209,8 +216,7 @@ class DBHelper {
    * @returns {Array} Array of reviews
    */
   static fetchReviews(restaurant_id) {
-    const url = `http://localhost:1337/reviews/?restaurant_id=${restaurant_id}`;
-    return fetch(url).then(response => response.json()).then(response => response);
+    return fetch(DBHelper.FETCH_REVIEWS_URL(restaurant_id)).then(response => response.json()).then(response => response);
   }
 
   /**

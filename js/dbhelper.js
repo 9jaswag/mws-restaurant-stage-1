@@ -203,6 +203,30 @@ class DBHelper {
     });
   }
 
+  /**
+   * Fetch all reviews for a restaurant
+   * @param {number} restaurant_id restaurant's ID
+   * @returns {Array} Array of reviews
+   */
+  static fetchReviews(restaurant_id) {
+    const url = `http://localhost:1337/reviews/?restaurant_id=${restaurant_id}`;
+    return fetch(url).then(response => response.json()).then(response => response);
+  }
+
+  /**
+   * Submit a review
+   * @param {Object} review review object
+   * @returns {Object} review object
+   */
+  static submitReview(review) {
+    return fetch('http://localhost:1337/reviews', {
+      method: 'POST',
+      body: JSON.stringify(review)
+    }).then(response => response.json())
+      .then(response => response)
+      .catch(error => console.log(error));
+  }
+
   /* static mapMarkerForRestaurant(restaurant, map) {
     const marker = new google.maps.Marker({
       position: restaurant.latlng,

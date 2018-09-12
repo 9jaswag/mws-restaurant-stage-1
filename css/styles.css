@@ -344,7 +344,8 @@ img {
   padding: 0;
 }
 
-#reviews-list li {
+#reviews-list li,
+.review-form-container {
   background-color: #fff;
   border: 2px solid #f3f3f3;
   display: block;
@@ -430,6 +431,7 @@ img {
   width: 100%;
   padding: 0.4rem;
   border: 0;
+  background-color: #f3f3f3;
   /* border: 1px solid #005555; */
 }
 
@@ -456,6 +458,10 @@ img {
   font-size: 10pt;
   border: 0;
   margin-top: 0.5rem;
+}
+
+.input-textarea textarea {
+  background-color: #f3f3f3;
 }
 
 /* ====================== Mobile Styles ====================== */
@@ -485,6 +491,7 @@ img {
   #restaurant-img,
   #restaurant-cuisine,
   #reviews-list li,
+  .review-form-container,
   .inside #footer {
     width: 100%;
   }
@@ -502,7 +509,8 @@ img {
 
   #restaurant-img,
   #restaurant-cuisine,
-  #reviews-list li {
+  #reviews-list li,
+  .review-form-container {
     width: 100%;
   }
 

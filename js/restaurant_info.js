@@ -102,9 +102,9 @@ fillRestaurantHTML = async (restaurant = self.restaurant) => {
     fillRestaurantHoursHTML();
   }
   // fetch reviews
-  const reviews = await fetchReviews(restaurant.id)
+  const reviews = await DBHelper.fetchReviews(restaurant.id)
   // fill reviews
-  fillReviewsHTML(reviews);
+  fillReviewsHTML(sortReviews(reviews));
 }
 
 /**
@@ -206,7 +206,7 @@ getParameterByName = (name, url) => {
 /**
  * Submit a review
  */
-submitReview = (event) => {
+submitReview = async (event) => {
   const form = document.querySelector('#review-form');
   event.preventDefault();
   const payload = {
@@ -216,25 +216,26 @@ submitReview = (event) => {
     comments: event.srcElement[2].value
   };
 
-  fetch('http://localhost:1337/reviews/', {
-    method: 'POST',
-    body: JSON.stringify(payload)
-  }).then(response => response.json())
-    .then(review => {
-      const reviewList = document.getElementById('reviews-list');
-      reviewList.appendChild(createReviewHTML(review));
-      form.reset();
-    })
-    .catch(error => console.log(error));
+  const review = await DBHelper.submitReview(payload);
+  const reviewList = document.getElementById('reviews-list');
+  reviewList.prepend(createReviewHTML(review));
+  form.reset();
+  // display success message
 }
 
-fetchReviews = (restaurant_id) => {
-  const url = `http://localhost:1337/reviews/?restaurant_id=${restaurant_id}`;
-  return fetch(url).then(response => response.json()).then(response => response);
-}
-
+/**
+ * Format review response date to human readable date
+ */
 formatDate = (timestamp) => {
   const date = new Date(timestamp);
   const options = { year: 'numeric', month: 'long', day: 'numeric' };
   return date.toLocaleDateString('en-us', options)
+}
+
+/**
+ * Sort reviews by date created
+ */
+sortReviews = (reviews) => {
+  const customSort = (a, b) => new Date(b.createdAt) > new Date(a.createdAt);
+  return reviews.sort(customSort);
 }

@@ -18,6 +18,7 @@ const getDb = () => {
       // when a higher db version is loaded, create a new store
       openDb.onupgradeneeded = () => {
         openDb.result.createObjectStore('restaurants');
+        openDb.result.createObjectStore('reviews');
       };
 
       openDb.onsuccess = () => {
@@ -34,30 +35,30 @@ const getDb = () => {
  * @param {String} type action type to be run on the object store
  * @param {Function} callback Callback function to be run on the object store
  */
-const withDb = async (type, callback) => {
+const withDb = async (type, callback, dbs) => {
   const db = await getDb();
   return new Promise((resolve, reject) => {
-    const transaction = db.transaction('restaurants', type);
+    const transaction = db.transaction(dbs, type);
     transaction.oncomplete = () => resolve();
     transaction.onerror = () => reject(transaction.error);
     // pass the store to the callback function
-    callback(transaction.objectStore('restaurants'));
+    callback(transaction.objectStore(dbs));
   });
 };
 
-const setDbValue = (key, value) => {
+const setDbValue = (key, value, dbs = 'restaurants') => {
   const setDbValueCallback = db => db.put(key, value);
-  return withDb('readwrite', setDbValueCallback);
+  return withDb('readwrite', setDbValueCallback, dbs);
 };
 
-const getDbValue = async (key) => {
+const getDbValue = async (key, dbs = 'restaurants') => {
   let request;
   const getDbValueCallback = db => request = db.get(key);
-  await withDb('readonly', getDbValueCallback);
+  await withDb('readonly', getDbValueCallback, dbs);
   return request.result;
 };
 
-const deleteDbValue = (key) => {
+const deleteDbValue = (key, dbs = 'restaurants') => {
   const deleteDbValueCallback = db => db.delete(key);
-  return withDb('readwrite', deleteDbValueCallback);
+  return withDb('readwrite', deleteDbValueCallback, dbs);
 };

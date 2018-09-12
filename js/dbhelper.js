@@ -215,8 +215,33 @@ class DBHelper {
    * @param {number} restaurant_id restaurant's ID
    * @returns {Array} Array of reviews
    */
-  static fetchReviews(restaurant_id) {
-    return fetch(DBHelper.FETCH_REVIEWS_URL(restaurant_id)).then(response => response.json()).then(response => response);
+  static async fetchReviews(restaurant_id) {
+    // return fetch(DBHelper.FETCH_REVIEWS_URL(restaurant_id)).then(response => response.json()).then(response => response);
+    const networkFetch = fetch(DBHelper.FETCH_REVIEWS_URL(restaurant_id))
+      .then(response => {
+        if (response.status != 200) {
+          return false;
+        }
+        return response.json();
+      })
+      .catch(error => {
+        // callback(error, null)
+      });
+
+    const networkResponse = await networkFetch;
+
+    return getDbValue(restaurant_id, 'reviews').then(response => {
+      if (!response && !networkResponse) {
+        // show offline message or so
+      }
+
+      if (networkResponse && networkResponse.length > 0) {
+        deleteDbValue(restaurant_id, 'reviews');
+        setDbValue(networkResponse, restaurant_id, 'reviews');
+      }
+
+      return response || networkResponse;
+    });
   }
 
   /**

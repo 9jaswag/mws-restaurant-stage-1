@@ -501,6 +501,17 @@ img {
   }
 }
 
+@media screen and (max-width: 768px) {
+  #review-form .input-group  {
+    display: block;
+    width: 100%;
+  }
+
+  #review-form label {
+    margin-top: 0.5rem;
+  }
+}
+
 @media screen and (min-width: 600px) and (max-width: 768px) {
 
   #breadcrumb {

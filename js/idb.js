@@ -19,6 +19,7 @@ const getDb = () => {
       openDb.onupgradeneeded = () => {
         openDb.result.createObjectStore('restaurants');
         openDb.result.createObjectStore('reviews');
+        openDb.result.createObjectStore('offline-reviews');
       };
 
       openDb.onsuccess = () => {

@@ -188,8 +188,8 @@ class DBHelper {
   }
 
   /**
- * Display offline alert message
- */
+   * Display offline alert message
+   */
   static offlineAlert() {
     const alert = document.querySelector('.offline-alert');
 

@@ -208,6 +208,7 @@ getParameterByName = (name, url) => {
  */
 submitReview = async (event) => {
   const form = document.querySelector('#review-form');
+  let review;
   event.preventDefault();
   const payload = {
     restaurant_id: Number(event.currentTarget.baseURI.split('=')[1]),
@@ -216,11 +217,17 @@ submitReview = async (event) => {
     comments: event.srcElement[2].value
   };
 
-  const review = await DBHelper.submitReview(payload);
+  if (navigator.onLine) {
+    review = await DBHelper.submitReview(payload);
+    // display success message
+  } else {
+    review = saveOfflineReview(payload);
+    // your response has been added and will be saved when you're online
+  }
+
   const reviewList = document.getElementById('reviews-list');
   reviewList.prepend(createReviewHTML(review));
   form.reset();
-  // display success message
 }
 
 /**
@@ -238,4 +245,10 @@ formatDate = (timestamp) => {
 sortReviews = (reviews) => {
   const customSort = (a, b) => new Date(b.createdAt) > new Date(a.createdAt);
   return reviews.sort(customSort);
+}
+
+saveOfflineReview = (review) => {
+  setDbValue(review, review.restaurant_id, 'offline-reviews');
+  review.createdAt = Date.now();
+  return review;
 }

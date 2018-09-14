@@ -258,6 +258,22 @@ class DBHelper {
       .catch(error => console.log(error));
   }
 
+  static submitOfflineReviews() {
+    if (navigator.onLine) {
+      const offlineReviews = getAllDbContent('offline-reviews');
+      offlineReviews.then(reviews => {
+        reviews.forEach((review, index) => {
+          (async () => {
+            const rev = await DBHelper.submitReview(review);
+            if (rev) {
+              deleteDbValue(index + 1, 'offline-reviews');
+            };
+          })()
+        });
+      });
+    }
+  }
+
   /* static mapMarkerForRestaurant(restaurant, map) {
     const marker = new google.maps.Marker({
       position: restaurant.latlng,

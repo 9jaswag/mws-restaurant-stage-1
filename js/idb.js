@@ -19,7 +19,7 @@ const getDb = () => {
       openDb.onupgradeneeded = () => {
         openDb.result.createObjectStore('restaurants');
         openDb.result.createObjectStore('reviews');
-        openDb.result.createObjectStore('offline-reviews');
+        openDb.result.createObjectStore('offline-reviews', { autoIncrement: true });
       };
 
       openDb.onsuccess = () => {
@@ -48,7 +48,12 @@ const withDb = async (type, callback, dbs) => {
 };
 
 const setDbValue = (key, value, dbs = 'restaurants') => {
-  const setDbValueCallback = db => db.put(key, value);
+  let setDbValueCallback;
+  if (key) {
+    setDbValueCallback = db => db.put(key, value);
+  } else {
+    setDbValueCallback = db => db.put(value);
+  }
   return withDb('readwrite', setDbValueCallback, dbs);
 };
 
@@ -62,4 +67,11 @@ const getDbValue = async (key, dbs = 'restaurants') => {
 const deleteDbValue = (key, dbs = 'restaurants') => {
   const deleteDbValueCallback = db => db.delete(key);
   return withDb('readwrite', deleteDbValueCallback, dbs);
+};
+
+const getAllDbContent = async (dbs = 'restaurants') => {
+  let request;
+  const getAllDbContentCallback = db => request = db.getAll();
+  await withDb('readonly', getAllDbContentCallback, dbs);
+  return request.result;
 };

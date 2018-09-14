@@ -7,6 +7,7 @@ var newMap;
 document.addEventListener('DOMContentLoaded', (event) => {
   initMap();
   DBHelper.offlineAlert();
+  DBHelper.submitOfflineReviews();
 });
 
 /**
@@ -221,6 +222,7 @@ submitReview = async (event) => {
     review = await DBHelper.submitReview(payload);
     // display success message
   } else {
+    console.log('offline submit')
     review = saveOfflineReview(payload);
     // your response has been added and will be saved when you're online
   }
@@ -248,7 +250,7 @@ sortReviews = (reviews) => {
 }
 
 saveOfflineReview = (review) => {
-  setDbValue(review, review.restaurant_id, 'offline-reviews');
+  setDbValue(null, review, 'offline-reviews');
   review.createdAt = Date.now();
   return review;
 }

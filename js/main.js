@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
   fetchNeighborhoods();
   fetchCuisines();
   DBHelper.offlineAlert();
+  DBHelper.submitOfflineReviews();
 });
 
 /**

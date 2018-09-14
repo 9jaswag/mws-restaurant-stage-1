@@ -63,6 +63,7 @@ const serveCachedData = (event) => {
     return cache.match(storageUrl, { ignoreSearch: true }).then(response => {
       return response || fetch(event.request).then(networkResponse => {
         if (storageUrl === 'restaurants') return networkResponse;
+        if (storageUrl === 'reviews/') return networkResponse;
         return caches.open(cacheName).then(cache => {
           cache.put(storageUrl, networkResponse.clone());
           return networkResponse;

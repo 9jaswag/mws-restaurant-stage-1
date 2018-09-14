@@ -7,6 +7,7 @@ var newMap;
 document.addEventListener('DOMContentLoaded', (event) => {
   initMap();
   DBHelper.offlineAlert();
+  DBHelper.submitOfflineReviews();
 });
 
 /**
@@ -80,7 +81,7 @@ fetchRestaurantFromURL = (callback) => {
 /**
  * Create restaurant HTML and add it to the webpage
  */
-fillRestaurantHTML = (restaurant = self.restaurant) => {
+fillRestaurantHTML = async (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
   name.tabIndex = 0;
@@ -101,8 +102,10 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
+  // fetch reviews
+  const reviews = await DBHelper.fetchReviews(restaurant.id);
   // fill reviews
-  fillReviewsHTML();
+  fillReviewsHTML(sortReviews(reviews));
 }
 
 /**
@@ -133,7 +136,8 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h3');
   title.innerHTML = 'Reviews';
-  container.appendChild(title);
+  title.tabIndex = 0;
+  container.prepend(title);
 
   if (!reviews) {
     const noReviews = document.createElement('p');
@@ -159,7 +163,7 @@ createReviewHTML = (review) => {
   li.tabIndex = 0;
 
   const date = document.createElement('p');
-  date.innerHTML = review.date;
+  date.innerHTML = formatDate(review.createdAt);
   li.appendChild(date);
 
   const rating = document.createElement('p');
@@ -198,4 +202,55 @@ getParameterByName = (name, url) => {
   if (!results[2])
     return '';
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+/**
+ * Submit a review
+ */
+submitReview = async (event) => {
+  const form = document.querySelector('#review-form');
+  let review;
+  event.preventDefault();
+  const payload = {
+    restaurant_id: Number(event.currentTarget.baseURI.split('=')[1]),
+    name: event.srcElement[0].value,
+    rating: event.srcElement[1].value,
+    comments: event.srcElement[2].value
+  };
+
+  if (navigator.onLine) {
+    review = await DBHelper.submitReview(payload);
+    // display success message
+  } else {
+    console.log('offline submit')
+    review = saveOfflineReview(payload);
+    // your response has been added and will be saved when you're online
+  }
+
+  const reviewList = document.getElementById('reviews-list');
+  reviewList.prepend(createReviewHTML(review));
+  form.reset();
+}
+
+/**
+ * Format review response date to human readable date
+ */
+formatDate = (timestamp) => {
+  const date = new Date(timestamp);
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  return date.toLocaleDateString('en-us', options)
+}
+
+/**
+ * Sort reviews by date created
+ */
+sortReviews = (reviews) => {
+  const customSort = (a, b) => new Date(b.createdAt) > new Date(a.createdAt);
+  return reviews.sort(customSort);
+}
+
+saveOfflineReview = (review) => {
+  setDbValue(null, review, 'offline-reviews');
+  review.createdAt = Date.now();
+  return review;
 }

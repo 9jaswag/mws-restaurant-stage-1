@@ -12,6 +12,13 @@ class DBHelper {
   }
 
   /**
+   * URL for fetching reviews
+   */
+  static FETCH_REVIEWS_URL(id) {
+    return `http://localhost:1337/reviews/?restaurant_id=${id}`
+  }
+
+  /**
    * Fetch all restaurants.
    */
   static async fetchRestaurants(callback) {
@@ -181,8 +188,8 @@ class DBHelper {
   }
 
   /**
- * Display offline alert message
- */
+   * Display offline alert message
+   */
   static offlineAlert() {
     const alert = document.querySelector('.offline-alert');
 
@@ -201,6 +208,70 @@ class DBHelper {
         alert.style.display = "block";
       });
     });
+  }
+
+  /**
+   * Fetch all reviews for a restaurant
+   * @param {number} restaurant_id restaurant's ID
+   * @returns {Array} Array of reviews
+   */
+  static async fetchReviews(restaurant_id) {
+    // return fetch(DBHelper.FETCH_REVIEWS_URL(restaurant_id)).then(response => response.json()).then(response => response);
+    const networkFetch = fetch(DBHelper.FETCH_REVIEWS_URL(restaurant_id))
+      .then(response => {
+        if (response.status != 200) {
+          return false;
+        }
+        return response.json();
+      })
+      .catch(error => {
+        // callback(error, null)
+      });
+
+    const networkResponse = await networkFetch;
+
+    return getDbValue(restaurant_id, 'reviews').then(response => {
+      if (!response && !networkResponse) {
+        // show offline message or so
+      }
+
+      if (networkResponse && networkResponse.length > 0) {
+        deleteDbValue(restaurant_id, 'reviews');
+        setDbValue(networkResponse, restaurant_id, 'reviews');
+      }
+
+      return response || networkResponse;
+    });
+  }
+
+  /**
+   * Submit a review
+   * @param {Object} review review object
+   * @returns {Object} review object
+   */
+  static submitReview(review) {
+    return fetch('http://localhost:1337/reviews', {
+      method: 'POST',
+      body: JSON.stringify(review)
+    }).then(response => response.json())
+      .then(response => response)
+      .catch(error => console.log(error));
+  }
+
+  static submitOfflineReviews() {
+    if (navigator.onLine) {
+      const offlineReviews = getAllDbContent('offline-reviews');
+      offlineReviews.then(reviews => {
+        reviews.forEach((review, index) => {
+          (async () => {
+            const rev = await DBHelper.submitReview(review);
+            if (rev) {
+              deleteDbValue(index + 1, 'offline-reviews');
+            };
+          })()
+        });
+      });
+    }
   }
 
   /* static mapMarkerForRestaurant(restaurant, map) {

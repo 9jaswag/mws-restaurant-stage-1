@@ -86,6 +86,8 @@ fillRestaurantHTML = async (restaurant = self.restaurant) => {
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
+
+  setFavDetails();
   // fetch reviews
   const reviews = await DBHelper.fetchReviews(restaurant.id);
   // fill reviews
@@ -236,4 +238,32 @@ saveOfflineReview = (review) => {
   setDbValue(null, review, 'offline-reviews');
   review.createdAt = Date.now();
   return review;
+}
+
+setFavDetails = (restaurant = self.restaurant) => {
+  const fav = (restaurant.is_favorite === true || restaurant.is_favorite === 'true') ? true : false;
+  restaurant.is_favorite = fav;
+
+  if (restaurant.is_favorite === true) {
+    toggleFavStyle('false', 'true');
+  } else {
+    toggleFavStyle('true', 'false');
+  }
+}
+
+toggleFavStyle = (class1, class2) => {
+  const favText = document.querySelector('.fav-text');
+  const favStar = document.querySelector('.favourite');
+  if (favText.classList.contains(class1)) favText.classList.remove(class1);
+  if (favStar.classList.contains(class1)) favStar.classList.remove(class1);
+  favText.classList.add(class2);
+  favStar.classList.add(class2);
+}
+
+toggleFav = async () => {
+  const res = await DBHelper.toggleRestaurantFav(self.restaurant);
+  if (res) {
+    self.restaurant = res;
+    setFavDetails(res);
+  }
 }

@@ -240,9 +240,8 @@ saveOfflineReview = (review) => {
   return review;
 }
 
-setFavDetails = (restaurant = self.restaurant) => {
-  const fav = (restaurant.is_favorite === true || restaurant.is_favorite === 'true') ? true : false;
-  restaurant.is_favorite = fav;
+setFavDetails = () => {
+  const restaurant = setFavToBoolean();
 
   if (restaurant.is_favorite === true) {
     toggleFavStyle('false', 'true');
@@ -261,9 +260,19 @@ toggleFavStyle = (class1, class2) => {
 }
 
 toggleFav = async () => {
-  const res = await DBHelper.toggleRestaurantFav(self.restaurant);
+  const restaurant = setFavToBoolean();
+  const res = await DBHelper.toggleRestaurantFav(restaurant);
   if (res) {
     self.restaurant = res;
-    setFavDetails(res);
+    setFavDetails();
   }
+}
+
+/**
+ * Convert restaurant.is_favourite value to boolean. For some reasons the API sometimes returns a string instead of a boolean
+ */
+setFavToBoolean = (restaurant = self.restaurant) => {
+  const fav = (restaurant.is_favorite === true || restaurant.is_favorite === 'true') ? true : false;
+  restaurant.is_favorite = fav;
+  return restaurant;
 }

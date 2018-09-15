@@ -271,6 +271,9 @@ class DBHelper {
       .catch(error => console.log(error));
   }
 
+  /**
+   * Submit offline reviews saved in the indexDB
+   */
   static submitOfflineReviews() {
     if (navigator.onLine) {
       const offlineReviews = getAllDbContent('offline-reviews');
@@ -285,6 +288,20 @@ class DBHelper {
         });
       });
     }
+  }
+
+  /**
+   * Update restaurant's favourite
+   * @param {Object} restaurant restaurant object
+   */
+  static toggleRestaurantFav(restaurant) {
+    const id = restaurant.id;
+    const bool = !restaurant.is_favorite;
+    const url = `http://localhost:1337/restaurants/${id}/?is_favorite=${bool}`;
+
+    return fetch(url, { method: 'PUT' })
+      .then(response => response.json())
+      .then(response => response);
   }
 
 }

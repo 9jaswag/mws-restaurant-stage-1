@@ -469,6 +469,30 @@ img {
   border-top: 1px solid white;
 }
 
+.favourite {
+  cursor: pointer;
+  margin-left: .5rem;
+  font-size: 1.4rem;
+}
+
+.favourite.false::before {
+  content: '☆';
+}
+
+.favourite.true::before {
+  content: '🌟';
+}
+
+.fav-text.false::before {
+  content: 'Add to favourites ☞';
+  font-size: 1.4rem;
+}
+
+.fav-text.true::before {
+  content: 'Remove from favourites ☞';
+  font-size: 1.4rem;
+}
+
 /* ====================== Mobile Styles ====================== */
 @media screen and (max-width: 600px) {
 

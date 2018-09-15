@@ -174,38 +174,40 @@ class DBHelper {
   }
 
   /**
- * Display offline alert message
- */
-  static offlineAlert() {
+   *
+   * @param {String} message text to be displayed in the alert
+   * @param {String} type alert type
+   */
+  static displayAlert(message, type) {
     const alert = document.querySelector('.offline-alert');
-
-    // if (navigator.onLine) {
-    //   alert.style.display = "block";
-    // } else {
-    //   alert.style.display = "none";
-    // }
-
-    window.addEventListener('load', () => {
-      window.addEventListener('online', () => {
-        alert.style.display = "none";
-      });
-
-      window.addEventListener('offline', () => {
-        alert.style.display = "block";
-      });
-    });
+    alert.style.display = 'block';
+    if (type === 'success') alert.classList.add('success');
+    alert.innerText = message;
   }
 
-  /* static mapMarkerForRestaurant(restaurant, map) {
-    const marker = new google.maps.Marker({
-      position: restaurant.latlng,
-      title: restaurant.name,
-      url: DBHelper.urlForRestaurant(restaurant),
-      map: map,
-      animation: google.maps.Animation.DROP}
-    );
-    return marker;
-  } */
+  /**
+   * Function for clearing alert message on page
+   */
+  static clearAlert() {
+    const alert = document.querySelector('.offline-alert');
+    if (alert.classList.contains('success')) alert.classList.remove('success');
+    alert.innerText = '';
+    alert.style.display = 'none';
+  }
+
+  /**
+   * Display offline alert message
+   */
+  static offlineAlert() {
+    window.ononline = () => DBHelper.clearAlert();
+    window.onoffline = () => DBHelper.displayAlert("You're offline");
+
+    if (navigator.onLine) {
+      DBHelper.clearAlert();
+    } else {
+      DBHelper.displayAlert("You're offline");
+    }
+  }
 
 }
 

@@ -1,5 +1,5 @@
-const cacheName = 'mws-restaurant-v1';
-const imageCacheName = 'mws-restaurant-image-v1';
+const cacheName = 'mws-restaurant-v2';
+const imageCacheName = 'mws-restaurant-image-v2';
 const urlsToCache = [
   "./",
   "./css/styles.css",

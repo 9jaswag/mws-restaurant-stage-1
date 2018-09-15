@@ -204,11 +204,10 @@ submitReview = async (event) => {
 
   if (navigator.onLine) {
     review = await DBHelper.submitReview(payload);
-    // display success message
+    DBHelper.displayAlert('Your review has been submitted', 'success');
   } else {
-    console.log('offline submit')
     review = saveOfflineReview(payload);
-    // your response has been added and will be saved when you're online
+    DBHelper.displayAlert("Your review has been saved. It will be submitted when you're online");
   }
 
   const reviewList = document.getElementById('reviews-list');

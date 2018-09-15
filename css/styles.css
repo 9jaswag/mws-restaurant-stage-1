@@ -374,8 +374,8 @@ img {
   text-align: center;
   font-weight: 500;
   display: none;
-  border-bottom-left-radius: 1rem;
-  border-bottom-right-radius: 1rem;
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
 }
 
 .filter-option {
@@ -462,6 +462,11 @@ img {
 
 .input-textarea textarea {
   background-color: #f3f3f3;
+}
+
+.offline-alert.success {
+  background: #005555;
+  border-top: 1px solid white;
 }
 
 /* ====================== Mobile Styles ====================== */
